@@ -2,6 +2,11 @@
 
 ### Map Configs Depend Map Name
 
+・Prefix (surf_.cfg) will override any map start with surf_
+・if fails plugin will start search to map name surf_boreas.cfg
+・if fails plugin will start _default_.cfg
+
+
 ## .:[ Dependencies ]:.
 [Metamod:Source (2.x)](https://www.sourcemm.net/downloads.php/?branch=master)
 
