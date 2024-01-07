@@ -1,30 +1,26 @@
 using CounterStrikeSharp.API;
 using CounterStrikeSharp.API.Core;
-using CounterStrikeSharp.API.Core.Attributes.Registration;
 using System.Text.Json.Serialization;
-using CounterStrikeSharp.API.Modules.Timers;
+using CounterStrikeSharp.API.Core.Attributes.Registration;
 
 namespace Map_Configs_Prefix;
 
 public class MapConfigsPrefixConfig : BasePluginConfig
 {
-    [JsonPropertyName("ForceCvar")] public bool ForceCvar { get; set; } = false;
+    [JsonPropertyName("ConVarEnforcer")] public bool ConVarEnforcer { get; set; } = false;
     [JsonPropertyName("EnableErrorLogChecker")] public bool EnableErrorLogChecker { get; set; } = false;
 }
 
 public class MapConfigsPrefix : BasePlugin, IPluginConfig<MapConfigsPrefixConfig>
 {
     public override string ModuleName => "Map Configs Prefix";
-    public override string ModuleVersion => "1.0.0";
+    public override string ModuleVersion => "1.0.1";
     public override string ModuleAuthor => "Gold KingZ";
     public override string ModuleDescription => "Map Configs Depend Map Name";
     public MapConfigsPrefixConfig Config { get; set; } = new MapConfigsPrefixConfig();
-    public static string MapName => NativeAPI.GetMapName();
-
-    private bool onetime;
     private string Tpath = "";
     private string Date = "";
-    private CounterStrikeSharp.API.Modules.Timers.Timer? _forcecvar;
+    public static string SMapName => NativeAPI.GetMapName();
     public void OnConfigParsed(MapConfigsPrefixConfig config)
     {
         Config = config; 
@@ -32,6 +28,10 @@ public class MapConfigsPrefix : BasePlugin, IPluginConfig<MapConfigsPrefixConfig
     
     public override void Load(bool hotReload)
     {
+        ExecCommandMap();
+
+        RegisterListener<Listeners.OnMapStart>(OnMapStartHandler);
+
         string Fpath = Path.Combine(ModuleDirectory,"../../plugins/Map_Configs_Prefix/ErrorLogs/");
         Date = DateTime.Now.ToString("MM-dd-yyyy");
         string fileName = DateTime.Now.ToString("MM-dd-yyyy") + ".txt";
@@ -46,52 +46,13 @@ public class MapConfigsPrefix : BasePlugin, IPluginConfig<MapConfigsPrefixConfig
         {
             File.Create(Tpath);
         }
-
-        onetime = false;
-        ExecCommandMap();
-        if(Config.ForceCvar)
-        {
-            _forcecvar?.Kill();
-            _forcecvar = null;
-            _forcecvar = AddTimer(0.1f, forcecvarTimer_Callback, TimerFlags.REPEAT | TimerFlags.STOP_ON_MAPCHANGE);
-        }
     }
-    private void forcecvarTimer_Callback()
-    {
-        ExecCommandMap();
-    }
-
-    [GameEventHandler(HookMode.Pre)]
-    public HookResult OnRoundStart(EventRoundStart @event, GameEventInfo info)
-    {
-        if(Config.ForceCvar)
-        {
-            _forcecvar?.Kill();
-            _forcecvar = null;
-            _forcecvar = AddTimer(0.1f, forcecvarTimer_Callback, TimerFlags.REPEAT | TimerFlags.STOP_ON_MAPCHANGE);
-        }
-        if(onetime == false)
-        {
-            ExecCommandMap();
-            Server.NextFrame(() =>
-            {
-                ExecCommandMap();
-                AddTimer(3.0f, () =>
-                {
-                    ExecCommandMap();
-                    onetime = true;
-                });
-            });
-        }
-        return HookResult.Continue;
-    }
-
     private void ExecCommandMap()
     {
         string folderPath = Path.Combine(ModuleDirectory, "../../plugins/Map_Configs_Prefix");
-
-        int underscoreIndex = MapName.IndexOf('_');
-        string result = underscoreIndex != -1 ? MapName.Substring(0, underscoreIndex + 1) : MapName;
+        if(SMapName == null)return;
+        int underscoreIndex = SMapName.IndexOf('_');
+        string result = underscoreIndex != -1 ? SMapName.Substring(0, underscoreIndex + 1) : SMapName;
 
         for (int i = 0; i < 4; i++)
         {
@@ -108,14 +69,21 @@ public class MapConfigsPrefix : BasePlugin, IPluginConfig<MapConfigsPrefixConfig
                 bool foundMatch = false;
                 foreach (string fileName in fileNamess)
                 {
+                    
                     string shortFileName = Path.GetFileNameWithoutExtension(fileName);
-                    if (!string.IsNullOrEmpty(shortFileName) && 
-                    (result.Equals(shortFileName, StringComparison.OrdinalIgnoreCase) || 
-                    MapName.Equals(shortFileName, StringComparison.OrdinalIgnoreCase)))
+                    if (!string.IsNullOrEmpty(shortFileName))
                     {
-                        Server.ExecuteCommand($"execifexists Map-Configs-Prefix/{shortFileName}");
-                        foundMatch = true;
-                        break;
+                        if(result.Equals(shortFileName, StringComparison.OrdinalIgnoreCase))
+                        {
+                            foundMatch = true;
+                            Server.ExecuteCommand($"exec Map-Configs-Prefix/{shortFileName}");
+                            break;
+                        }else if(SMapName.Equals(shortFileName, StringComparison.OrdinalIgnoreCase))
+                        {
+                            foundMatch = true;
+                            Server.ExecuteCommand($"exec Map-Configs-Prefix/{shortFileName}");
+                            break;
+                        }
                     }
                 }
 
@@ -136,7 +104,7 @@ public class MapConfigsPrefix : BasePlugin, IPluginConfig<MapConfigsPrefixConfig
                     string defaultFilePath = Path.Combine(mapsCfgDirectory, defaultFileName);
                     if (File.Exists(defaultFilePath))
                     {
-                        Server.ExecuteCommand($"execifexists Map-Configs-Prefix/{defaultFileName}");
+                        Server.ExecuteCommand($"exec Map-Configs-Prefix/{defaultFileName}");
                     }else if (!File.Exists(defaultFilePath))
                     {
                         if (Config.EnableErrorLogChecker && File.Exists(Tpath))
@@ -181,5 +149,47 @@ public class MapConfigsPrefix : BasePlugin, IPluginConfig<MapConfigsPrefixConfig
             }
         }
     }
+    private void OnMapStartHandler(string mapName)
+    {
+        ExecCommandMap();
+        Server.NextFrame(() =>
+        {
+            ExecCommandMap();
+            AddTimer(2.0f, () =>
+            {
+                ExecCommandMap();
+            });
+            AddTimer(3.0f, () =>
+            {
+                ExecCommandMap();
+            });
+            AddTimer(4.0f, () =>
+            {
+                ExecCommandMap();
+            });
+        });
         
+    }
+
+    [GameEventHandler(HookMode.Post)]
+    public HookResult OnEventRoundStartPost(EventRoundStart @event, GameEventInfo info)
+    {
+        if(Config.ConVarEnforcer)
+        {
+            ExecCommandMap();
+            Server.NextFrame(() =>
+            {
+                ExecCommandMap();
+                AddTimer(2.0f, () =>
+                {
+                    ExecCommandMap();
+                });
+                AddTimer(3.0f, () =>
+                {
+                    ExecCommandMap();
+                });
+            });
+        }
+        return HookResult.Continue;
+    }
 }
