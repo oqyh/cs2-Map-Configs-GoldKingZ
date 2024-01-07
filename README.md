@@ -1,4 +1,4 @@
-# [CS2] Map-Configs-Prefix (1.0.0)
+# [CS2] Map-Configs-Prefix (1.0.1)
 
 ### Map Configs Depend Map Name
 
@@ -19,8 +19,8 @@
 ```json
 {
 	
-   // Force Cvar ((Not Recommands On Some Cvar Has Time Like mp_timelimit))
-  "ForceCvar": false,
+   // Force ConVars ((Not Recommands On Some Cvar Has Time Like mp_timelimit))
+  "ConVarEnforcer": false,
   
   
    // Make Log For Debug The Error Located in ../addons/counterstrikesharp/plugins/Map_Configs_Prefix/ErrorLogs/
@@ -36,6 +36,9 @@
 
 ## .:[ Change Log ]:.
 ```
+(1.0.1)
+-Fix Some Bugs
+
 (1.0.0)
 -Initial Release
 ```
