@@ -2,11 +2,11 @@
 
 ### Map Configs Depend Map Name
 
-・Prefix (surf_.cfg) will override any map start with surf_
+・Prefix (<mark>surf_.cfg</mark>) will override any map start with surf_
 
-・if fails plugin will start search to map name surf_boreas.cfg
+・if fails plugin will start search to full map name (<mark>surf_boreas.cfg</mark>)
 
-・if fails plugin will start _ _default_ _.cfg
+・if fails plugin will start <mark>_default_.cfg</mark>
 
 
 
