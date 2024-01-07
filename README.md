@@ -6,7 +6,7 @@
 
 ・if fails plugin will start search to map name surf_boreas.cfg
 
-・if fails plugin will start ___default___.cfg
+・if fails plugin will start _ _default_ _.cfg
 
 
 
