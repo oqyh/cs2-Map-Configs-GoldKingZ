@@ -2,6 +2,9 @@
 
 ### Map Configs Depend Map Name
 
+・Add Many Cfg You Like Depend Map Name to Execute Per Map Inside `csgo/cfg/Map-Configs-Prefix/`
+
+Example:
 ・Prefix (`surf_.cfg`) will override any map start with surf_
 
 ・if fails plugin will start search to full map name (`surf_boreas.cfg`)
