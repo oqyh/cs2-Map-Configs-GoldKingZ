@@ -1,36 +1,52 @@
 using CounterStrikeSharp.API;
 using CounterStrikeSharp.API.Core;
 using System.Text.Json.Serialization;
-using CounterStrikeSharp.API.Core.Attributes.Registration;
+using CounterStrikeSharp.API.Modules.Timers;
 
 namespace Map_Configs_Prefix;
 
 public class MapConfigsPrefixConfig : BasePluginConfig
 {
-    [JsonPropertyName("ConVarEnforcer")] public bool ConVarEnforcer { get; set; } = false;
     [JsonPropertyName("EnableErrorLogChecker")] public bool EnableErrorLogChecker { get; set; } = false;
 }
 
 public class MapConfigsPrefix : BasePlugin, IPluginConfig<MapConfigsPrefixConfig>
 {
     public override string ModuleName => "Map Configs Prefix";
-    public override string ModuleVersion => "1.0.1";
+    public override string ModuleVersion => "1.0.2";
     public override string ModuleAuthor => "Gold KingZ";
     public override string ModuleDescription => "Map Configs Depend Map Name";
     public MapConfigsPrefixConfig Config { get; set; } = new MapConfigsPrefixConfig();
     private string Tpath = "";
     private string Date = "";
     public static string SMapName => NativeAPI.GetMapName();
+
     public void OnConfigParsed(MapConfigsPrefixConfig config)
     {
         Config = config; 
     }
-    
+
     public override void Load(bool hotReload)
     {
-        ExecCommandMap();
+        RegisterEventHandler<EventRoundAnnounceMatchStart>(OnEventRoundAnnounceMatchStart);
+        RegisterListener<Listeners.OnMapStart>(OnMapStart);
+    }
 
-        RegisterListener<Listeners.OnMapStart>(OnMapStartHandler);
+    private void OnMapStart(string Map)
+    {
+        ExecCommandMap();
+        Server.NextFrame(() =>
+        {
+            ExecCommandMap();
+            AddTimer(2.0f, () =>
+            {
+                ExecCommandMap();
+            }, TimerFlags.STOP_ON_MAPCHANGE);
+            AddTimer(3.0f, () =>
+            {
+                ExecCommandMap();
+            }, TimerFlags.STOP_ON_MAPCHANGE);
+        });
 
         string Fpath = Path.Combine(ModuleDirectory,"../../plugins/Map_Configs_Prefix/ErrorLogs/");
         Date = DateTime.Now.ToString("MM-dd-yyyy");
@@ -47,6 +63,28 @@ public class MapConfigsPrefix : BasePlugin, IPluginConfig<MapConfigsPrefixConfig
             File.Create(Tpath);
         }
     }
+
+    private HookResult OnEventRoundAnnounceMatchStart(EventRoundAnnounceMatchStart @event, GameEventInfo info)
+    {
+        if(@event == null)return HookResult.Continue;
+        ExecCommandMap();
+        Server.NextFrame(() =>
+        {
+            ExecCommandMap();
+            AddTimer(2.0f, () =>
+            {
+                ExecCommandMap();
+            }, TimerFlags.STOP_ON_MAPCHANGE);
+            AddTimer(3.0f, () =>
+            {
+                ExecCommandMap();
+                
+            }, TimerFlags.STOP_ON_MAPCHANGE);
+        });
+        
+        return HookResult.Continue;
+    }
+
     private void ExecCommandMap()
     {
         string folderPath = Path.Combine(ModuleDirectory, "../../plugins/Map_Configs_Prefix");
@@ -148,48 +186,5 @@ public class MapConfigsPrefix : BasePlugin, IPluginConfig<MapConfigsPrefixConfig
                 }
             }
         }
-    }
-    private void OnMapStartHandler(string mapName)
-    {
-        ExecCommandMap();
-        Server.NextFrame(() =>
-        {
-            ExecCommandMap();
-            AddTimer(2.0f, () =>
-            {
-                ExecCommandMap();
-            });
-            AddTimer(3.0f, () =>
-            {
-                ExecCommandMap();
-            });
-            AddTimer(4.0f, () =>
-            {
-                ExecCommandMap();
-            });
-        });
-        
-    }
-
-    [GameEventHandler(HookMode.Post)]
-    public HookResult OnEventRoundStartPost(EventRoundStart @event, GameEventInfo info)
-    {
-        if(Config.ConVarEnforcer)
-        {
-            ExecCommandMap();
-            Server.NextFrame(() =>
-            {
-                ExecCommandMap();
-                AddTimer(2.0f, () =>
-                {
-                    ExecCommandMap();
-                });
-                AddTimer(3.0f, () =>
-                {
-                    ExecCommandMap();
-                });
-            });
-        }
-        return HookResult.Continue;
     }
 }
