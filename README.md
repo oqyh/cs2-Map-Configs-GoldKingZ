@@ -1,4 +1,4 @@
-# [CS2] Map-Configs-Prefix (1.0.2)
+# [CS2] Map-Configs-Prefix (1.0.3)
 
 ### Map Configs Depend Map Name
 
@@ -34,6 +34,10 @@ Example:
 
 ## .:[ Change Log ]:.
 ```
+(1.0.3)
+-Fix Some Bugs
+-Fix Warmup Not Execute cfg
+
 (1.0.2)
 -Fix Some Bugs
 -Remove "ConVarEnforcer"
