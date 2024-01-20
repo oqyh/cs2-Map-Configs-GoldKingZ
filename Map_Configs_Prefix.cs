@@ -13,7 +13,7 @@ public class MapConfigsPrefixConfig : BasePluginConfig
 public class MapConfigsPrefix : BasePlugin, IPluginConfig<MapConfigsPrefixConfig>
 {
     public override string ModuleName => "Map Configs Prefix";
-    public override string ModuleVersion => "1.0.2";
+    public override string ModuleVersion => "1.0.3";
     public override string ModuleAuthor => "Gold KingZ";
     public override string ModuleDescription => "Map Configs Depend Map Name";
     public MapConfigsPrefixConfig Config { get; set; } = new MapConfigsPrefixConfig();
@@ -29,6 +29,7 @@ public class MapConfigsPrefix : BasePlugin, IPluginConfig<MapConfigsPrefixConfig
     public override void Load(bool hotReload)
     {
         RegisterEventHandler<EventRoundAnnounceMatchStart>(OnEventRoundAnnounceMatchStart);
+        RegisterEventHandler<EventRoundAnnounceWarmup>(OnEventRoundAnnounceWarmup);
         RegisterListener<Listeners.OnMapStart>(OnMapStart);
     }
 
@@ -38,13 +39,24 @@ public class MapConfigsPrefix : BasePlugin, IPluginConfig<MapConfigsPrefixConfig
         Server.NextFrame(() =>
         {
             ExecCommandMap();
+            AddTimer(1.0f, () =>
+            {
+                ExecCommandMap();
+            }, TimerFlags.STOP_ON_MAPCHANGE);
             AddTimer(2.0f, () =>
             {
                 ExecCommandMap();
+                
             }, TimerFlags.STOP_ON_MAPCHANGE);
             AddTimer(3.0f, () =>
             {
                 ExecCommandMap();
+                
+            }, TimerFlags.STOP_ON_MAPCHANGE);
+            AddTimer(4.0f, () =>
+            {
+                ExecCommandMap();
+                
             }, TimerFlags.STOP_ON_MAPCHANGE);
         });
 
@@ -71,11 +83,52 @@ public class MapConfigsPrefix : BasePlugin, IPluginConfig<MapConfigsPrefixConfig
         Server.NextFrame(() =>
         {
             ExecCommandMap();
-            AddTimer(2.0f, () =>
+            AddTimer(1.0f, () =>
             {
                 ExecCommandMap();
             }, TimerFlags.STOP_ON_MAPCHANGE);
+            AddTimer(2.0f, () =>
+            {
+                ExecCommandMap();
+                
+            }, TimerFlags.STOP_ON_MAPCHANGE);
             AddTimer(3.0f, () =>
+            {
+                ExecCommandMap();
+                
+            }, TimerFlags.STOP_ON_MAPCHANGE);
+            AddTimer(4.0f, () =>
+            {
+                ExecCommandMap();
+                
+            }, TimerFlags.STOP_ON_MAPCHANGE);
+        });
+        
+        return HookResult.Continue;
+    }
+
+    private HookResult OnEventRoundAnnounceWarmup(EventRoundAnnounceWarmup @event, GameEventInfo info)
+    {
+        if(@event == null)return HookResult.Continue;
+        ExecCommandMap();
+        Server.NextFrame(() =>
+        {
+            ExecCommandMap();
+            AddTimer(1.0f, () =>
+            {
+                ExecCommandMap();
+            }, TimerFlags.STOP_ON_MAPCHANGE);
+            AddTimer(2.0f, () =>
+            {
+                ExecCommandMap();
+                
+            }, TimerFlags.STOP_ON_MAPCHANGE);
+            AddTimer(3.0f, () =>
+            {
+                ExecCommandMap();
+                
+            }, TimerFlags.STOP_ON_MAPCHANGE);
+            AddTimer(4.0f, () =>
             {
                 ExecCommandMap();
                 
