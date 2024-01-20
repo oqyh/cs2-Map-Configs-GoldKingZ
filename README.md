@@ -1,4 +1,4 @@
-# [CS2] Map-Configs-Prefix (1.0.1)
+# [CS2] Map-Configs-Prefix (1.0.2)
 
 ### Map Configs Depend Map Name
 
@@ -22,14 +22,8 @@ Example:
 ## .:[ Configuration ]:.
 ```json
 {
-	
-   // Force ConVars ((Not Recommands On Some Cvar Has Time Like mp_timelimit))
-  "ConVarEnforcer": false,
-  
-  
    // Make Log For Debug The Error Located in ../addons/counterstrikesharp/plugins/Map_Configs_Prefix/ErrorLogs/
   "EnableErrorLogChecker": false,
-  
   
   //-----------------------------------------------------------------------------------------
   
@@ -40,6 +34,11 @@ Example:
 
 ## .:[ Change Log ]:.
 ```
+(1.0.2)
+-Fix Some Bugs
+-Remove "ConVarEnforcer"
+-Now Cfg will Override Any Map
+
 (1.0.1)
 -Fix Some Bugs
 
