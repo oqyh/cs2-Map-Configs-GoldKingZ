@@ -27,8 +27,6 @@
 
  ・if plugin cannot find (`f_surf_.cfg`) will start search to full map name config (`f_surf_boreas.cfg`)
 
- ・if plugin cannot find (`f_surf_boreas.cfg`)  will execute  (`_default_.cfg`)
-
 
 
 
