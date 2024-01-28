@@ -1,6 +1,6 @@
 # [CS2] Map-Configs-Prefix (1.0.4)
 
-## Map Configs Depend Map Name
+#### Map Configs Depend Map Name
 
 ・Add Many Cfg You Like Depend Map Name to Execute Per Map Inside `csgo/cfg/Map-Configs-Prefix/`
 
