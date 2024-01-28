@@ -1,16 +1,23 @@
-# [CS2] Map-Configs-Prefix (1.0.3)
+# [CS2] Map-Configs-Prefix (1.0.4)
 
 ### Map Configs Depend Map Name
 
 ・Add Many Cfg You Like Depend Map Name to Execute Per Map Inside `csgo/cfg/Map-Configs-Prefix/`
 
-Example:
+Example Normal Cfg:
 
 ・Prefix (`surf_.cfg`) will override any map start with surf_
 
 ・if fails plugin will start search to full map name (`surf_boreas.cfg`)
 
 ・if fails plugin will start `_default_.cfg`
+
+
+Example Force Cfg:
+
+・Prefix (`f_surf_.cfg`) will override any map start with surf_
+
+・if fails plugin will start search to full map name (`f_surf_boreas.cfg`)
 
 
 
@@ -22,11 +29,34 @@ Example:
 ## .:[ Configuration ]:.
 ```json
 {
-   // Make Log For Debug The Error Located in ../addons/counterstrikesharp/plugins/Map_Configs_Prefix/ErrorLogs/
+  //-----------Event Calls Path-----------//
+  //-------------------------------------//
+  //OnMapStart: Will Be Called On Map Start 1 Time Only
+  //OnWarmupStart: Will Be Called On WarmUp Only
+  //OnRoundStart: Will Be Called On Every Round Start Include WarmUp
+  //OnMatchStart: Will Be Called On Match Started (Round 1) 1 Time Only
+  //OnPlayerSpawn: Will Be Called On Every Player Spawn
+  //-------------------------------------//
+  
+//-----------------------------------------------------------------------------------------
+
+  //This On Normal Cfg example de_.cfg or de_dust2.cfg or _default_.cfg
+  "ExecMode": "OnMapStart,OnWarmupStart,OnRoundStart,OnMatchStart",
+  //How Many Time You Want ExecMode To Be Exec (More = Better To Override)
+  "ExecXTimes": 3,
+  
+//-----------------------------------------------------------------------------------------
+
+  //This On Force Cfg example f_de_.cfg or f_de_dust2.cfg
+  "ForceExecMode": "OnPlayerSpawn",
+  //How Many Time You Want ForceExecMode To Be Exec (More = Better To Override)
+  "ForceExecXTimes": 1,
+  
+//-----------------------------------------------------------------------------------------
+
   "EnableErrorLogChecker": false,
   
-  //-----------------------------------------------------------------------------------------
-  
+//-----------------------------------------------------------------------------------------
   "ConfigVersion": 1
 }
 ```
@@ -34,6 +64,14 @@ Example:
 
 ## .:[ Change Log ]:.
 ```
+(1.0.4)
+-Fix Some Bugs
+-Rework Prefix Plugin
+-Added "ExecMode"
+-Added "ExecXTimes"
+-Added "ForceExecMode"
+-Added "ForceExecXTimes"
+
 (1.0.3)
 -Fix Some Bugs
 -Fix Warmup Not Execute cfg
