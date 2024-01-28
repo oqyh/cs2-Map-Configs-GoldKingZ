@@ -8,15 +8,21 @@
 #### Example Normal Cfg (Will be edit on json `ExecMode` and `ExecXTimes`):
  
  ・Prefix (`surf_.cfg`) will execute on any map start with `surf_`
+
  ・if plugin cannot find (`surf_.cfg`)  will start search to full map name config (`surf_boreas.cfg`)
+
  ・if plugin cannot find (`surf_boreas.cfg`)  will execute  (`_default_.cfg`)
+
 
 
 #### Example Force Cfg (Will be edit on json `ForceExecMode` and `ForceExecXTimes`):
 
  ・Prefix (`f_surf_.cfg`) will execute on any map start with `surf_`
+
  ・if plugin cannot find (`f_surf_.cfg`) will start search to full map name config (`f_surf_boreas.cfg`)
+
  ・if plugin cannot find (`f_surf_boreas.cfg`)  will execute  (`_default_.cfg`)
+
 
 
 
