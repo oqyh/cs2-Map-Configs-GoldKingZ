@@ -4,20 +4,19 @@
 
 ・Add Many Cfg You Like Depend Map Name to Execute Per Map Inside `csgo/cfg/Map-Configs-Prefix/`
 
-Example Normal Cfg:
 
-・Prefix (`surf_.cfg`) will override any map start with surf_
+#Example Normal Cfg (Will be edit on json `ExecMode` and `ExecXTimes`):
+ 
+ ・Prefix (`surf_.cfg`) will execute on any map start with `surf_`
+ ・if plugin cannot find (`surf_.cfg`)  will start search to full map name config (`surf_boreas.cfg`)
+ ・if plugin cannot find (`surf_boreas.cfg`)  will execute  (`_default_.cfg`)
 
-・if fails plugin will start search to full map name (`surf_boreas.cfg`)
 
-・if fails plugin will start `_default_.cfg`
+#Example Force Cfg (Will be edit on json `ForceExecMode` and `ForceExecXTimes`):
 
-
-Example Force Cfg:
-
-・Prefix (`f_surf_.cfg`) will override any map start with surf_
-
-・if fails plugin will start search to full map name (`f_surf_boreas.cfg`)
+ ・Prefix (`f_surf_.cfg`) will execute on any map start with `surf_`
+ ・if plugin cannot find (`f_surf_.cfg`) will start search to full map name config (`f_surf_boreas.cfg`)
+ ・if plugin cannot find (`f_surf_boreas.cfg`)  will execute  (`_default_.cfg`)
 
 
 
