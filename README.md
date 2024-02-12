@@ -30,8 +30,9 @@
  >・if plugin cannot find (`f_aim_.cfg`)  will start search config name (`f_aim_deagle_.cfg`)
  >
  >・if plugin cannot find (`f_aim_deagle_.cfg`)  will start search full map name config (`f_aim_deagle_lego.cfg`)
->> [!NOTE] 
- >・Note: If you like to invert the search path enable `InvertPathMode`
+
+> [!NOTE]  
+> Highlights information that users should take into account, even when skimming.
 
 
 
