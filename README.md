@@ -17,7 +17,7 @@
  >・if plugin cannot find (`aim_deagle_.cfg`)  will start search full map name config (`aim_deagle_lego.cfg`)
  >
  >・if plugin cannot find (`aim_deagle_lego.cfg`)  will execute  (`_default_.cfg`)
- >
+> [!NOTE] 
  >・Note: If you like to invert the search path enable `InvertPathMode`
 
 
@@ -30,7 +30,7 @@
  >・if plugin cannot find (`f_aim_.cfg`)  will start search config name (`f_aim_deagle_.cfg`)
  >
  >・if plugin cannot find (`f_aim_deagle_.cfg`)  will start search full map name config (`f_aim_deagle_lego.cfg`)
- >
+> [!NOTE] 
  >・Note: If you like to invert the search path enable `InvertPathMode`
 
 
