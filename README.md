@@ -10,9 +10,9 @@
 
 #### Example Normal Cfg (Will be edit on json `ExecMode` and `ExecXTimes`):
  
- ・Prefix (`aim_.cfg`) will execute on any map start with `aim_`
+ >・Prefix (`aim_.cfg`) will execute on any map start with `aim_`
 
- ・if plugin cannot find (`aim_.cfg`)  will start search config name (`aim_deagle_.cfg`)
+ >>・if plugin cannot find (`aim_.cfg`)  will start search config name (`aim_deagle_.cfg`)
 
  ・if plugin cannot find (`aim_deagle_.cfg`)  will start search full map name config (`aim_deagle_lego.cfg`)
 
