@@ -2,11 +2,14 @@ using CounterStrikeSharp.API;
 using CounterStrikeSharp.API.Core;
 using System.Text.Json.Serialization;
 using CounterStrikeSharp.API.Modules.Timers;
+using CounterStrikeSharp.API.Core.Attributes;
 
 namespace Map_Configs_Prefix;
 
+[MinimumApiVersion(164)]
 public class MapConfigsPrefixConfig : BasePluginConfig
 {
+    [JsonPropertyName("InvertPathMode")] public bool InvertPathMode { get; set; } = false;
     [JsonPropertyName("ExecMode")] public string ExecMode { get; set; } = "OnRoundStart,OnMapStart,OnMatchStart,OnWarmupStart";
     [JsonPropertyName("ExecXTimes")] public int ExecXTimes { get; set; } = 3;
 
@@ -18,14 +21,13 @@ public class MapConfigsPrefixConfig : BasePluginConfig
 public class MapConfigsPrefix : BasePlugin, IPluginConfig<MapConfigsPrefixConfig>
 {
     public override string ModuleName => "Map Configs Prefix";
-    public override string ModuleVersion => "1.0.4";
+    public override string ModuleVersion => "1.0.5";
     public override string ModuleAuthor => "Gold KingZ";
     public override string ModuleDescription => "Map Configs Depend Map Name";
     public MapConfigsPrefixConfig Config { get; set; } = new MapConfigsPrefixConfig();
     private string Tpath = "";
     private string Date = "";
     public static string SMapName => NativeAPI.GetMapName();
-
     public void OnConfigParsed(MapConfigsPrefixConfig config)
     {
         Config = config; 
@@ -266,8 +268,9 @@ public class MapConfigsPrefix : BasePlugin, IPluginConfig<MapConfigsPrefixConfig
         string folderPath = Path.Combine(ModuleDirectory, "../../plugins/Map_Configs_Prefix");
         if(SMapName == null)return;
         int underscoreIndex = SMapName.IndexOf('_');
-        string result = underscoreIndex != -1 ? SMapName.Substring(0, underscoreIndex + 1) : SMapName;
-
+        int nextUnderscoreIndex = SMapName.IndexOf('_', underscoreIndex + 1);
+        string prefix = underscoreIndex != -1 ? SMapName.Substring(0, underscoreIndex + 1) : SMapName;
+        string prefix2 = underscoreIndex != -1 ? SMapName.Substring(0, nextUnderscoreIndex + 1) : SMapName;
         for (int i = 0; i < 4; i++)
         {
             folderPath = Path.Combine(folderPath, "..");
@@ -285,55 +288,127 @@ public class MapConfigsPrefix : BasePlugin, IPluginConfig<MapConfigsPrefixConfig
                 {
                     
                     string shortFileName = Path.GetFileNameWithoutExtension(fileName);
+                    
                     if (!string.IsNullOrEmpty(shortFileName))
                     {
-                        if(result.Equals(shortFileName, StringComparison.OrdinalIgnoreCase))
+                        if(Config.InvertPathMode == false)
                         {
-                            
-                            foundMatch = true;
-                            Server.ExecuteCommand($"exec Map-Configs-Prefix/{shortFileName}");
-                            break;
-                        }else if(SMapName.Equals(shortFileName, StringComparison.OrdinalIgnoreCase))
+                            bool found = prefix.Trim().Equals(shortFileName.Trim(), StringComparison.OrdinalIgnoreCase);
+                            if(found)
+                            {
+                                foundMatch = true;
+                                Server.ExecuteCommand($"exec Map-Configs-Prefix/{shortFileName}");
+                                break;
+                            }
+                        }else if(Config.InvertPathMode == true)
                         {
-                            foundMatch = true;
-                            Server.ExecuteCommand($"exec Map-Configs-Prefix/{shortFileName}");
-                            break;
+                            bool found = SMapName.Trim().Equals(shortFileName.Trim(), StringComparison.OrdinalIgnoreCase);
+                            if(found)
+                            {
+                                foundMatch = true;
+                                Server.ExecuteCommand($"exec Map-Configs-Prefix/{shortFileName}");
+                                break;
+                            }
                         }
+                        
                     }
                 }
-
                 if (!foundMatch)
                 {
-                    if (Config.EnableErrorLogChecker && File.Exists(Tpath))
+                    bool foundMatch2 = false;
+                    foreach (string fileName in fileNamess)
                     {
-                        try
+                        
+                        string shortFileName = Path.GetFileNameWithoutExtension(fileName);
+                        if (!string.IsNullOrEmpty(shortFileName))
                         {
-                            File.AppendAllLines(Tpath, new[]{$"[{Date} - Couldn't Found Files in csgo/cfg/Map-Configs-Prefix/ That Match Current Map]"});
-                        }catch
-                        {
-                            File.AppendAllLines(Tpath, new[]{$"[{Date} - Please Give Map_Configs_Prefix.dll Permissions To Write.]"});
+                            if(Config.InvertPathMode == false)
+                            {
+                                bool found = prefix2.Trim().Equals(shortFileName.Trim(), StringComparison.OrdinalIgnoreCase);
+                                if(found)
+                                {
+                                    foundMatch2 = true;
+                                    Server.ExecuteCommand($"exec Map-Configs-Prefix/{shortFileName}");
+                                    break;
+                                }
+                            }else if(Config.InvertPathMode == true)
+                            {
+                                bool found = prefix2.Trim().Equals(shortFileName.Trim(), StringComparison.OrdinalIgnoreCase);
+                                if(found)
+                                {
+                                    foundMatch2 = true;
+                                    Server.ExecuteCommand($"exec Map-Configs-Prefix/{fileName}");
+                                    break;
+                                }
+                            }
+                            
                         }
                     }
-
-                    string defaultFileName = "_default_.cfg";
-                    string defaultFilePath = Path.Combine(mapsCfgDirectory, defaultFileName);
-                    if (File.Exists(defaultFilePath))
+                    if (!foundMatch2)
                     {
-                        Server.ExecuteCommand($"exec Map-Configs-Prefix/{defaultFileName}");
-                    }else if (!File.Exists(defaultFilePath))
-                    {
-                        if (Config.EnableErrorLogChecker && File.Exists(Tpath))
+                        bool foundMatch3 = false;
+                        foreach (string fileName in fileNamess)
                         {
-                            try
+                            
+                            string shortFileName = Path.GetFileNameWithoutExtension(fileName);
+                            if (!string.IsNullOrEmpty(shortFileName))
                             {
-                                File.AppendAllLines(Tpath, new[]{$"[{Date} - csgo/cfg/Map-Configs-Prefix/_default_.cfg file does not exist.]"});
-                            }catch
+                                if(Config.InvertPathMode == false)
+                                {
+                                    bool found = SMapName.Trim().Equals(shortFileName.Trim(), StringComparison.OrdinalIgnoreCase);
+                                    if(found)
+                                    {
+                                        foundMatch3 = true;
+                                        Server.ExecuteCommand($"exec Map-Configs-Prefix/{shortFileName}");
+                                        break;
+                                    }
+                                }else if(Config.InvertPathMode == true)
+                                {
+                                    bool found = prefix.Trim().Equals(shortFileName.Trim(), StringComparison.OrdinalIgnoreCase);
+                                    if(found)
+                                    {
+                                        foundMatch3 = true;
+                                        Server.ExecuteCommand($"exec Map-Configs-Prefix/{shortFileName}");
+                                        break;
+                                    }
+                                }
+                                
+                            }
+                        }
+                        if (!foundMatch3)
+                        {
+                            if (Config.EnableErrorLogChecker && File.Exists(Tpath))
                             {
-                                File.AppendAllLines(Tpath, new[]{$"[{Date} - Please Give Map_Configs_Prefix.dll Permissions To Write.]"});
+                                try
+                                {
+                                    File.AppendAllLines(Tpath, new[]{$"[{Date} - Couldn't Found Files in csgo/cfg/Map-Configs-Prefix/ That Match Current Map]"});
+                                }catch
+                                {
+                                    File.AppendAllLines(Tpath, new[]{$"[{Date} - Please Give Map_Configs_Prefix.dll Permissions To Write.]"});
+                                }
+                            }
+
+                            string defaultFileName = "_default_.cfg";
+                            string defaultFilePath = Path.Combine(mapsCfgDirectory, defaultFileName);
+                            if (File.Exists(defaultFilePath))
+                            {
+                                Server.ExecuteCommand($"exec Map-Configs-Prefix/{defaultFileName}");
+                            }else if (!File.Exists(defaultFilePath))
+                            {
+                                if (Config.EnableErrorLogChecker && File.Exists(Tpath))
+                                {
+                                    try
+                                    {
+                                        File.AppendAllLines(Tpath, new[]{$"[{Date} - csgo/cfg/Map-Configs-Prefix/_default_.cfg file does not exist.]"});
+                                    }catch
+                                    {
+                                        File.AppendAllLines(Tpath, new[]{$"[{Date} - Please Give Map_Configs_Prefix.dll Permissions To Write.]"});
+                                    }
+                                }
                             }
                         }
                     }
-                }
+                }  
             }
             else
             {
@@ -369,9 +444,14 @@ public class MapConfigsPrefix : BasePlugin, IPluginConfig<MapConfigsPrefixConfig
         string folderPath = Path.Combine(ModuleDirectory, "../../plugins/Map_Configs_Prefix");
         if(SMapName == null)return;
         int underscoreIndex = SMapName.IndexOf('_');
-        string result = underscoreIndex != -1 ? SMapName.Substring(0, underscoreIndex + 1) : SMapName;
-        string Fresult = "f_" + result;
+        int nextUnderscoreIndex = SMapName.IndexOf('_', underscoreIndex + 1);
+        string prefix = underscoreIndex != -1 ? SMapName.Substring(0, underscoreIndex + 1) : SMapName;
+        string prefix2 = underscoreIndex != -1 ? SMapName.Substring(0, nextUnderscoreIndex + 1) : SMapName;
+
+        string Fresul = "f_" + prefix;
+        string Fresul2 = "f_" + prefix2;
         string Fmap = "f_" + SMapName;
+
         for (int i = 0; i < 4; i++)
         {
             folderPath = Path.Combine(folderPath, "..");
@@ -384,23 +464,98 @@ public class MapConfigsPrefix : BasePlugin, IPluginConfig<MapConfigsPrefixConfig
             if (Directory.Exists(mapsCfgDirectory))
             {
                 string[] fileNamess = Directory.GetFiles(mapsCfgDirectory);
+                bool foundMatch = false;
                 foreach (string fileName in fileNamess)
                 {
                     
                     string shortFileName = Path.GetFileNameWithoutExtension(fileName);
+                    
                     if (!string.IsNullOrEmpty(shortFileName))
                     {
-                        if(Fresult.Equals(shortFileName, StringComparison.OrdinalIgnoreCase))
+                        if(Config.InvertPathMode == false)
                         {
-                            Server.ExecuteCommand($"exec Map-Configs-Prefix/{shortFileName}");
-                            break;
-                        }else if(Fmap.Equals(shortFileName, StringComparison.OrdinalIgnoreCase))
+                            bool found = Fresul.Trim().Equals(shortFileName.Trim(), StringComparison.OrdinalIgnoreCase);
+                            if(found)
+                            {
+                                foundMatch = true;
+                                Server.ExecuteCommand($"exec Map-Configs-Prefix/{shortFileName}");
+                                break;
+                            }
+                        }else if(Config.InvertPathMode == true)
                         {
-                            Server.ExecuteCommand($"exec Map-Configs-Prefix/{shortFileName}");
-                            break;
+                            bool found = Fmap.Trim().Equals(shortFileName.Trim(), StringComparison.OrdinalIgnoreCase);
+                            if(found)
+                            {
+                                foundMatch = true;
+                                Server.ExecuteCommand($"exec Map-Configs-Prefix/{shortFileName}");
+                                break;
+                            }
                         }
+                        
                     }
                 }
+                if (!foundMatch)
+                {
+                    bool foundMatch2 = false;
+                    foreach (string fileName in fileNamess)
+                    {
+                        
+                        string shortFileName = Path.GetFileNameWithoutExtension(fileName);
+                        if (!string.IsNullOrEmpty(shortFileName))
+                        {
+                            if(Config.InvertPathMode == false)
+                            {
+                                bool found = Fresul2.Trim().Equals(shortFileName.Trim(), StringComparison.OrdinalIgnoreCase);
+                                if(found)
+                                {
+                                    foundMatch2 = true;
+                                    Server.ExecuteCommand($"exec Map-Configs-Prefix/{shortFileName}");
+                                    break;
+                                }
+                            }else if(Config.InvertPathMode == true)
+                            {
+                                bool found = Fresul2.Trim().Equals(shortFileName.Trim(), StringComparison.OrdinalIgnoreCase);
+                                if(found)
+                                {
+                                    foundMatch2 = true;
+                                    Server.ExecuteCommand($"exec Map-Configs-Prefix/{fileName}");
+                                    break;
+                                }
+                            }
+                            
+                        }
+                    }
+                    if (!foundMatch2)
+                    {
+                        foreach (string fileName in fileNamess)
+                        {
+                            
+                            string shortFileName = Path.GetFileNameWithoutExtension(fileName);
+                            if (!string.IsNullOrEmpty(shortFileName))
+                            {
+                                if(Config.InvertPathMode == false)
+                                {
+                                    bool found = Fmap.Trim().Equals(shortFileName.Trim(), StringComparison.OrdinalIgnoreCase);
+                                    if(found)
+                                    {
+                                        Server.ExecuteCommand($"exec Map-Configs-Prefix/{shortFileName}");
+                                        break;
+                                    }
+                                }else if(Config.InvertPathMode == true)
+                                {
+                                    bool found = Fresul.Trim().Equals(shortFileName.Trim(), StringComparison.OrdinalIgnoreCase);
+                                    if(found)
+                                    {
+                                        Server.ExecuteCommand($"exec Map-Configs-Prefix/{shortFileName}");
+                                        break;
+                                    }
+                                }
+                                
+                            }
+                        }
+                        
+                    }
+                }  
             }
             else
             {
