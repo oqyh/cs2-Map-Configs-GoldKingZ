@@ -1,4 +1,4 @@
-# [CS2] Map-Configs-Prefix (1.0.4)
+# [CS2] Map-Configs-Prefix (1.0.5)
 
 ### Map Configs Depend Map Name
 
@@ -10,23 +10,28 @@
 
 #### Example Normal Cfg (Will be edit on json `ExecMode` and `ExecXTimes`):
  
- ・Prefix (`surf_.cfg`) will execute on any map start with `surf_`
+ ・Prefix (`aim_.cfg`) will execute on any map start with `aim_`
 
- ・if plugin cannot find (`surf_.cfg`)  will start search to full map name config (`surf_boreas.cfg`)
+ ・if plugin cannot find (`aim_.cfg`)  will start search config name (`aim_deagle_.cfg`)
 
- ・if plugin cannot find (`surf_boreas.cfg`)  will execute  (`_default_.cfg`)
+ ・if plugin cannot find (`aim_deagle_.cfg`)  will start search full map name config (`aim_deagle_lego.cfg`)
 
+ ・if plugin cannot find (`aim_deagle_lego.cfg`)  will execute  (`_default_.cfg`)
 
+ ・Note: If you like to invert the search path enable `InvertPathMode`
 
 
 
 
 #### Example Force Cfg (Will be edit on json `ForceExecMode` and `ForceExecXTimes`):
 
- ・Prefix (`f_surf_.cfg`) will execute on any map start with `surf_`
+ ・Prefix (`f_aim_.cfg`) will execute on any map start with `aim_`
 
- ・if plugin cannot find (`f_surf_.cfg`) will start search to full map name config (`f_surf_boreas.cfg`)
+ ・if plugin cannot find (`f_aim_.cfg`)  will start search config name (`f_aim_deagle_.cfg`)
 
+ ・if plugin cannot find (`f_aim_deagle_.cfg`)  will start search full map name config (`f_aim_deagle_lego.cfg`)
+
+ ・Note: If you like to invert the search path enable `InvertPathMode`
 
 
 
@@ -38,6 +43,14 @@
 ## .:[ Configuration ]:.
 ```json
 {
+  //Plugin Find Route Configs In csgo/cfg/Map-Configs-Prefix/
+  //----------------------------------------------------------------
+  //false: aim_.cfg ==> aim_deagle_.cfg ==> aim_deagle_lego.cfg ==> _default_.cfg
+  //true: aim_deagle_lego.cfg ==> aim_deagle_.cfg ==> aim_.cfg ==> _default_.cfg
+  "InvertPathMode": false,
+  
+//-----------------------------------------------------------------------------------------
+
   //-----------Event Calls Path-----------//
   //-------------------------------------//
   //OnMapStart: Will Be Called On Map Start 1 Time Only
@@ -47,8 +60,6 @@
   //OnPlayerSpawn: Will Be Called On Every Player Spawn
   //-------------------------------------//
   
-//-----------------------------------------------------------------------------------------
-
   //This On Normal Cfg example de_.cfg or de_dust2.cfg or _default_.cfg
   "ExecMode": "OnMapStart,OnWarmupStart,OnRoundStart,OnMatchStart",
   //How Many Time You Want ExecMode To Be Exec (More = Better To Override)
@@ -73,6 +84,12 @@
 
 ## .:[ Change Log ]:.
 ```
+(1.0.5)
+-Fix Some Bugs
+-Rework Prefix Plugin
+-Added InvertPathMode
+-Added More prefix
+
 (1.0.4)
 -Fix Some Bugs
 -Rework Prefix Plugin
