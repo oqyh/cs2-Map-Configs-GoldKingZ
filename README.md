@@ -1,8 +1,8 @@
-# [CS2] Map-Configs-Prefix (1.0.5)
+# [CS2] Map-Configs-GoldKingZ (1.0.6)
 
 ### Map Configs Depend Map Name
 
-・Add Many Cfg You Like Depend Map Name to Execute Per Map Inside `csgo/cfg/Map-Configs-Prefix/`
+・Add Many Cfg You Like Depend Map Name to Execute Per Map Inside `csgo/cfg/Map-Configs/`
 
 
 
@@ -35,13 +35,24 @@
 
 
 ## .:[ Dependencies ]:.
+
 [Metamod:Source (2.x)](https://www.sourcemm.net/downloads.php/?branch=master)
 
 [CounterStrikeSharp](https://github.com/roflmuffin/CounterStrikeSharp/releases)
 
+[Newtonsoft.Json](https://www.nuget.org/packages/Newtonsoft.Json)
+
 ## .:[ Configuration ]:.
+
+> [!CAUTION]
+> Config Located In ..\addons\counterstrikesharp\plugins\Map-Configs-GoldKingZ\config\config.json      
+> 
+
 ```json
 {
+  //Remove Maps Custom Commands
+  "RemoveMapCommands": true,
+
   //Plugin Find Route Configs In csgo/cfg/Map-Configs-Prefix/
   //----------------------------------------------------------------
   //false: aim_.cfg ==> aim_deagle_.cfg ==> aim_deagle_lego.cfg ==> _default_.cfg
@@ -73,16 +84,20 @@
   
 //-----------------------------------------------------------------------------------------
 
+  //Enable Error Debug Logs Located In ..\addons\counterstrikesharp\plugins\Map-Configs-GoldKingZ\ErrorLogs\
   "EnableErrorLogChecker": false,
-  
-//-----------------------------------------------------------------------------------------
-  "ConfigVersion": 1
 }
 ```
 
 
 ## .:[ Change Log ]:.
 ```
+(1.0.6)
+-Rework Prefix Plugin
+-Fix Some Bugs
+-Fix EnableErrorLogChecker
+-Added RemoveMapCommands
+
 (1.0.5)
 -Fix Some Bugs
 -Rework Prefix Plugin
