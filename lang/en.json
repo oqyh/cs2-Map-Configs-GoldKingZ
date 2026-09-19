@@ -1,0 +1,4 @@
+{
+    "PrintToChatToPlayer.ReloadPlugin.Not.Allowed": "{green}[Map Configs] {darkred}You Dont Have Permission",
+    "PrintToChatToPlayer.ReloadPlugin.Successfully": "{green}[Map Configs] {grey}Plugin Reloaded {lime}Successfully"
+}
